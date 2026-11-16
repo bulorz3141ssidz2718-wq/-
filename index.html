@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>歴史学概論2 単語カード（全110問）</title>
+<style>
+  body { font-family: sans-serif; background: #f3f4f6; margin: 0; padding: 16px; color: #1f2937; text-align: center; }
+  .container { max-width: 500px; margin: 0 auto; }
+  h1 { font-size: 18px; margin-bottom: 12px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 14px; }
+  .tab { padding: 6px 10px; border: 1px solid #d1d5db; background: #fff; border-radius: 6px; font-size: 13px; cursor: pointer; }
+  .tab.active { background: #2563eb; color: #fff; border-color: #2563eb; font-weight: bold; }
+  .status { font-size: 14px; margin-bottom: 10px; color: #4b5563; display: flex; justify-content: space-between; }
+  .card { background: #fff; border-radius: 12px; padding: 30px 20px; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.08); cursor: pointer; margin-bottom: 16px; border: 2px solid #e5e7eb; }
+  .card.answer-mode { background: #eff6ff; border-color: #3b82f6; }
+  .badge { font-size: 12px; background: #e5e7eb; padding: 3px 8px; border-radius: 12px; margin-bottom: 12px; }
+  .answer-mode .badge { background: #bfdbfe; color: #1e40af; }
+  .text { font-size: 20px; font-weight: bold; line-height: 1.5; }
+  .hint { font-size: 12px; color: #9ca3af; margin-top: 16px; }
+  .controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 12px; }
+  button.btn { padding: 12px 16px; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; flex: 1; }
+  .btn-prev { background: #e5e7eb; color: #374151; }
+  .btn-next { background: #2563eb; color: #fff; }
+  .btn-ok { background: #10b981; color: #fff; }
+  .btn-ng { background: #f59e0b; color: #fff; }
+  .sub-controls { display: flex; gap: 8px; justify-content: center; }
+  .btn-sub { padding: 8px 12px; background: #fff; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; cursor: pointer; }
+  .btn-sub.active { background: #fef3c7; border-color: #f59e0b; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>歴史学概論2 単語カード（No.14〜22）</h1>
+  <div class="tabs" id="tabs"></div>
+  <div class="status">
+    <span id="counter">1 / 110</span>
+    <span id="learned-count">習得済み: 0</span>
+  </div>
+  <div class="card" id="card" onclick="flipCard()">
+    <div class="badge" id="card-badge">No.14 問題</div>
+    <div class="text" id="card-text">読み込み中...</div>
+    <div class="hint">タップで裏返す</div>
+  </div>
+  <div class="controls">
+    <button class="btn btn-prev" onclick="prevCard()">← 前へ</button>
+    <button class="btn btn-next" onclick="nextCard()">次へ →</button>
+  </div>
+  <div class="controls">
+    <button class="btn btn-ng" onclick="markCard(false)">まだ</button>
+    <button class="btn btn-ok" onclick="markCard(true)">覚えた！</button>
+  </div>
+  <div class="sub-controls">
+    <button class="btn-sub" onclick="shuffleCards()">シャッフル</button>
+    <button class="btn-sub" id="filter-btn" onclick="toggleUnlearned()">未習得のみ表示</button>
+  </div>
+</div>
+
+<script>
+const allCards = [
+  // No.14
+  {no:"No.14", q:"設備投資の巨大化により産業資本と銀行資本が結びついて誕生したもの", a:"金融資本"},
+  {no:"No.14", q:"大企業・巨大財閥などが金融資本とともに産業支配をおこなうこと", a:"独占資本"},
+  {no:"No.14", q:"19世紀末、海外植民地の役割として従来の「原料供給地・商品市場」に加わった新たな役割", a:"資本の輸出先"},
+  {no:"No.14", q:"1870年代なかばからの長期不況に対し、各国が自国市場を排他的に利用するためにとった政策", a:"保護貿易主義"},
+  {no:"No.14", q:"植民地獲得によって愛国心を刺激し、対応しようとした先進国内の社会運動", a:"労働運動"},
+  {no:"No.14", q:"列強が帝国主義を正当化するために利用した排他的ナショナリズムの意識", a:"人種主義"},
+  {no:"No.14", q:"1884〜85年、ビスマルクの主催でアフリカ分割の国際ルール（先占権など）を決めた会議", a:"ベルリン会議"},
+  {no:"No.14", q:"イギリスがエジプトからケープ植民地まで南北に植民地拡大をめざした政策", a:"アフリカ縦断政策（3C政策）"},
+  {no:"No.14", q:"1898年、スーダンでイギリスとフランスが衝突した事件", a:"ファショダ事件"},
+  {no:"No.14", q:"1899〜1902年、ダイヤモンド獲得を狙いイギリスがオランダ系植民地人と戦った戦争", a:"南アフリカ戦争（ボーア戦争）"},
+  {no:"No.14", q:"フランスがアルジェリアからジブチをめざして進めたアフリカ政策", a:"アフリカ横断政策"},
+  {no:"No.14", q:"ビスマルク退陣後、積極的な世界政策を展開したドイツ皇帝", a:"ヴィルヘルム2世"},
+  {no:"No.14", q:"ドイツがオスマン帝国から1899年に敷設権を獲得した鉄道", a:"バグダード鉄道"},
+  {no:"No.14", q:"19世紀末のアフリカにおける2つの独立国", a:"リベリア・エチオピア"},
+  {no:"No.14", q:"1881〜99年、スーダンで英・エジプト連合と戦った反英・反植民地戦争の指導者（運動）", a:"マフディー"},
+  {no:"No.14", q:"19世紀末から北米やカリブ海域の黒人知識人によって始まった連帯運動（1900年ロンドン会議）", a:"パン＝アフリカ運動"},
+  // No.15
+  {no:"No.15", q:"1894〜95年、朝鮮をめぐり日本と清が戦った戦争", a:"日清戦争"},
+  {no:"No.15", q:"日清戦争前の朝鮮に対する清の伝統的な立場", a:"宗主国"},
+  {no:"No.15", q:"1894年、東学の信徒が中心となって朝鮮でおこした農民反乱", a:"甲午農民戦争"},
+  {no:"No.15", q:"1895年の下関条約で清が認めた朝鮮の地位", a:"朝鮮の独立"},
+  {no:"No.15", q:"下関条約で清が日本に割譲した3つの地域", a:"遼東半島・台湾・澎湖諸島"},
+  {no:"No.15", q:"下関条約で清が日本に支払うことになった賠償金の額（日本円で約3億1000万円）", a:"2億両（テール）"},
+  {no:"No.15", q:"1895年、ロシア・ドイツ・フランスが日本に遼東半島の返還を迫った出来事", a:"三国干渉"},
+  {no:"No.15", q:"三国干渉の代償としてロシアが清から敷設権を獲得した鉄道", a:"東清鉄道"},
+  {no:"No.15", q:"1898〜99年の中国分割で、ドイツが山東半島で租借した場所", a:"膠州湾"},
+  {no:"No.15", q:"中国分割でロシアが遼東半島南部で租借した場所", a:"旅順・大連"},
+  {no:"No.15", q:"中国分割でイギリスが租借した2つの場所", a:"威海衛・九竜半島"},
+  {no:"No.15", q:"中国分割でフランスが租借した場所", a:"広州湾"},
+  {no:"No.15", q:"1899年、中国分割に出遅れたアメリカが発表した宣言", a:"門戸開放宣言"},
+  {no:"No.15", q:"1894年、イギリスとの間で調印し領事裁判権の撤廃に成功した条約", a:"日英通商航海条約"},
+  {no:"No.15", q:"1900年、伊藤博文が政府と政党の提携のために組織した政党", a:"立憲政友会"},
+  {no:"No.15", q:"1897年、朝鮮が清の冊封体制から自立して変更した国号", a:"大韓帝国"},
+  {no:"No.15", q:"1898年、康有為や梁啓超らが日本の明治維新を手本におこなった清の改革運動", a:"変法運動"},
+  {no:"No.15", q:"西太后ら保守派の反対によって変法運動が失敗に終わった事件", a:"戊戌の政変"},
+  // No.16
+  {no:"No.16", q:"1890年までフランスの孤立化に努めたドイツの宰相", a:"ビスマルク"},
+  {no:"No.16", q:"1882年、ドイツ・オーストリア・イタリアが結んだ同盟", a:"三国同盟"},
+  {no:"No.16", q:"1891〜94年、ドイツの再保障条約破棄を機に結ばれた同盟", a:"露仏同盟"},
+  {no:"No.16", q:"1904年、ドイツの進出に対抗してイギリスとフランスが結んだ協商", a:"英仏協商"},
+  {no:"No.16", q:"1907年、イギリスとロシアが和解して結んだ協商", a:"英露協商"},
+  {no:"No.16", q:"1898年、アメリカがキューバを保護国化し、フィリピン・グアムを獲得した戦争", a:"アメリカ＝スペイン戦争"},
+  {no:"No.16", q:"セオドア＝ローズヴェルトの棍棒外交のもと1904年に着工された運河", a:"パナマ運河"},
+  {no:"No.16", q:"中国分割後に「扶清滅洋」を掲げて蜂起した排外運動の組織", a:"義和団"},
+  {no:"No.16", q:"1901年、義和団事件の講和として清と8カ国連合軍などの間で結ばれた条約", a:"北京議定書"},
+  {no:"No.16", q:"1905年、アメリカ大統領セオドア＝ローズヴェルトの仲介で結ばれた日露戦争の講和条約", a:"ポーツマス条約"},
+  {no:"No.16", q:"ポーツマス条約でロシアが日本に譲渡した長春以南の鉄道利権", a:"南満州鉄道"},
+  {no:"No.16", q:"ポーツマス条約でロシアが日本に割譲した領土", a:"北緯50度以南の樺太"},
+  {no:"No.16", q:"日露戦争後、ロシアが東アジアでの南下を断念して集中した地域", a:"バルカン半島"},
+  // No.17
+  {no:"No.17", q:"帝国主義国が植民地で特定農産物に特化して経営した大農園", a:"プランテーション"},
+  {no:"No.17", q:"イギリス領インドで、他のイギリス植民地へ労働力として輸出されたインド人労働者", a:"苦力（クーリー）"},
+  {no:"No.17", q:"イギリスがインド社会を分断統治するために宗教の違いとともに利用した身分制度", a:"カースト（制度）"},
+  {no:"No.17", q:"日清戦争後に台湾を統治するために設置された日本の統治機関", a:"台湾総督府"},
+  {no:"No.17", q:"日本統治下の台湾が日本へ供給した主な2つの農産物", a:"米・砂糖"},
+  {no:"No.17", q:"1904年、日本が韓国政府に財政・外交顧問を置くことを定めた協約", a:"第一次日韓協約"},
+  {no:"No.17", q:"1905年、韓国の外交権を奪い統監府を置くことを定めた協約（韓国保護条約）", a:"第二次日韓協約"},
+  {no:"No.17", q:"第二次日韓協約後に置かれた韓国統監府の初代統監", a:"伊藤博文"},
+  {no:"No.17", q:"1907年、ハーグ密使事件を機に日本によって退位させられた韓国皇帝", a:"高宗"},
+  {no:"No.17", q:"1907年、韓国の内政権を奪い韓国軍を解散させた協約", a:"第三次日韓協約"},
+  {no:"No.17", q:"1910年、韓国を日本の植民地とした条約", a:"韓国併合条約"},
+  {no:"No.17", q:"韓国併合後に漢城（ソウル）に設置された日本の統治機関（初代総督は寺内正毅）", a:"朝鮮総督府"},
+  // No.18
+  {no:"No.18", q:"1889年に結成された社会主義政党の国際組織", a:"第二インターナショナル"},
+  {no:"No.18", q:"1905年、ポーツマス条約の「賠償金なし」に対する不満から東京でおきた暴動事件", a:"日比谷焼打事件"},
+  {no:"No.18", q:"1910年、社会主義者弾圧の強化により幸徳秋水らが逮捕・処刑された事件", a:"大逆事件"},
+  {no:"No.18", q:"1905年、ロシアで皇帝専制への不満から起きた民衆射殺事件（第一次ロシア革命の契機）", a:"血の日曜日事件"},
+  {no:"No.18", q:"1899年と1907年の二度にわたり帝国主義諸国間の緊張緩和をめざして開催された会議", a:"ハーグ万国平和会議"},
+  {no:"No.18", q:"1908年、オスマン帝国でミドハト憲法を復活させ立憲政治をめざした革命", a:"青年トルコ革命"},
+  {no:"No.18", q:"ベトナムのファン＝ボイ＝チャウが指導した日本留学運動", a:"ドンズー（東遊）運動"},
+  {no:"No.18", q:"1905〜11年、イランで議会開設・憲法制定を実現した革命", a:"イラン立憲革命"},
+  {no:"No.18", q:"1905年、東京で孫文が結成した革命組織", a:"中国同盟会"},
+  {no:"No.18", q:"孫文が唱えた「民族の独立・民権の伸張・民生の安定」からなる思想", a:"三民主義"},
+  {no:"No.18", q:"1911年、武昌蜂起から各省の独立へと広がり清朝を打倒した革命", a:"辛亥革命"},
+  {no:"No.18", q:"1912年1月、孫文を臨時大総統として南京に誕生したアジア初の共和国", a:"中華民国"},
+  {no:"No.18", q:"孫文と取引し、清の皇帝を退位させて臨時大総統に就任した北洋軍閥の実力者", a:"袁世凱"},
+  {no:"No.18", q:"1912年に退位し、清朝滅亡とともにラストエンペラーとなった皇帝", a:"宣統帝溥儀"},
+  // No.19
+  {no:"No.19", q:"第一次世界大戦前、民族対立が激化し「ヨーロッパの火薬庫」と呼ばれた地域", a:"バルカン半島"},
+  {no:"No.19", q:"1914年6月、セルビア人青年がオーストリアの帝位継承者夫妻を殺害した事件", a:"サライェヴォ事件"},
+  {no:"No.19", q:"1915年、日本が中華民国の袁世凱政府に突きつけて受諾させた要求", a:"二十一カ条の要求"},
+  {no:"No.19", q:"機関銃の本格使用により第一次世界大戦で展開された長期戦の形態", a:"塹壕戦"},
+  {no:"No.19", q:"植民地の人々や国民を総動員し、軍需物資を生産・補給する戦争体制", a:"総力戦体制"},
+  {no:"No.19", q:"1917年、ドイツが開始しアメリカの参戦を招いた作戦", a:"無制限潜水艦作戦"},
+  {no:"No.19", q:"1918年3月、ロシアがドイツと結んで第一次世界大戦から単独講和した条約", a:"ブレスト＝リトフスク条約"},
+  {no:"No.19", q:"1918年11月、キール軍港の水兵暴動からドイツ帝政を崩壊させた革命", a:"ドイツ革命"},
+  // No.20
+  {no:"No.20", q:"1919年1月、第一次世界大戦の同盟国との各講和条約を審議するために開催された会議", a:"パリ講和会議"},
+  {no:"No.20", q:"パリ講和会議の根本原則となった、アメリカ大統領が1918年1月に発表した戦後構想", a:"ウィルソンの十四カ条の平和原則"},
+  {no:"No.20", q:"1919年6月、連合国とドイツの間で結ばれた講和条約", a:"ヴェルサイユ条約"},
+  {no:"No.20", q:"ヴェルサイユ条約でドイツからフランスへ返還された地方", a:"アルザス＝ロレーヌ地方"},
+  {no:"No.20", q:"ヴェルサイユ条約でドイツの非武装地帯とされたライン川流域の地域", a:"ラインラント"},
+  {no:"No.20", q:"1920年、ジュネーヴに本部を置いて設立された国際平和機構", a:"国際連盟"},
+  {no:"No.20", q:"1919年、ドイツで制定された世界初の社会権規定と完全普通選挙を導入した憲法", a:"ヴァイマル憲法"},
+  {no:"No.20", q:"1923年、ドイツの賠償金不払いを理由にフランス・ベルギーがおこなった占領", a:"ルール占領"},
+  {no:"No.20", q:"1924年、ドイツの賠償問題解決と経済復興のためにアメリカが作成した案", a:"ドーズ案"},
+  {no:"No.20", q:"1925年、ドイツと西欧諸国が国境の不可侵を約束し、ドイツの国際連盟加盟を実現した条約", a:"ロカルノ条約"},
+  {no:"No.20", q:"1928年、戦争を国際紛争解決の手段にしない（戦争の違法化）ことを定めた条約", a:"パリ不戦条約"},
+  {no:"No.20", q:"1921〜22年、アメリカの提唱で開催され東アジア・太平洋の国際秩序を定めた会議", a:"ワシントン会議"},
+  {no:"No.20", q:"ワシントン会議で米英日仏が結び、日英同盟の廃棄を決めた条約", a:"四カ国条約"},
+  {no:"No.20", q:"ワシントン会議で中国の主権尊重・門戸開放・機会均等を定めた条約", a:"九カ国条約"},
+  {no:"No.20", q:"外務大臣幣原喜重郎が進めた対米英協調路線・中国内政不干渉の外交", a:"幣原外交"},
+  // No.21
+  {no:"No.21", q:"1917年3月（ロシア暦2月）、ペトログラードの暴動からロマノフ朝を滅ぼした革命", a:"二月革命（三月革命）"},
+  {no:"No.21", q:"二月革命で退位し、ロマノフ朝最後の皇帝となった人物", a:"ニコライ2世"},
+  {no:"No.21", q:"1917年4月、帰国したレーニンが臨時政府への非協力と「すべての権力をソヴィエトへ」を主張した宣言", a:"四月テーゼ"},
+  {no:"No.21", q:"1917年11月（ロシア暦10月）、ボリシェヴィキが臨時政府を倒しソヴィエト政権を樹立した革命", a:"十月革命（十一月革命）"},
+  {no:"No.21", q:"十月革命直後にレーニンが発表し、無併合・無賠償・民族自決にもとづく即時平和を呼びかけた宣言", a:"平和に関する布告"},
+  {no:"No.21", q:"1919年、各国の共産党を指導し世界革命の達成をめざしてレーニンが結成した組織", a:"コミンテルン（第3インターナショナル）"},
+  {no:"No.21", q:"1918〜21年、内戦と干渉戦争の危機に対応するため私企業禁止・穀物強制徴発をおこなった政策", a:"戦時共産主義"},
+  {no:"No.21", q:"1921〜28年、国内経済の立て直しのため資本主義的要素を一部復活させた経済政策", a:"新経済政策（ネップ）"},
+  {no:"No.21", q:"1922年、ロシア・ウクライナなど4つのソヴィエト共和国が連合して成立した連邦国家", a:"ソヴィエト社会主義共和国連邦（ソ連）"},
+  {no:"No.21", q:"戦後インドで非暴力・不服従運動を指導した反英独立運動の指導者", a:"ガンディー"},
+  // No.22
+  {no:"No.22", q:"第一次世界大戦を経てアメリカが戦前の「債務国」から転換した立場", a:"債権国"},
+  {no:"No.22", q:"1920年代のアメリカで中産階級が成長し、クレジット販売の一般化とともに到来した社会", a:"大量消費社会"},
+  {no:"No.22", q:"1920年代のアメリカ社会の中核を占めた「ホワイト・アングロサクソン・プロテスタント」の略称", a:"WASP"},
+  {no:"No.22", q:"1924年、アメリカで国別割当て法により新移民を制限し、アジア諸国の移民を全面禁止した法律", a:"移民法（排日移民法）"},
+  {no:"No.22", q:"1919年、プロテスタント的価値観から制定され、ギャングによる密造酒密売を招いた法律", a:"禁酒法"},
+  {no:"No.22", q:"1920年代に全盛となった、反黒人・反新移民・反カトリック・反ユダヤを掲げる秘密結社", a:"KKK（クー＝クラックス＝クラン）"}
+];
+
+let currentFilter = "すべて";
+let onlyUnlearned = false;
+let currentIndex = 0;
+let isFlipped = false;
+let learnedSet = new Set();
+let deck = [...allCards];
+
+function initTabs() {
+  const nos = ["すべて", "No.14", "No.15", "No.16", "No.17", "No.18", "No.19", "No.20", "No.21", "No.22"];
+  const tabsEl = document.getElementById("tabs");
+  tabsEl.innerHTML = "";
+  nos.forEach(no => {
+    const btn = document.createElement("button");
+    btn.className = "tab" + (no === currentFilter ? " active" : "");
+    btn.textContent = no;
+    btn.onclick = () => {
+      currentFilter = no;
+      applyFilter();
+    };
+    tabsEl.appendChild(btn);
+  });
+}
+
+function applyFilter() {
+  deck = allCards.filter((card, idx) => {
+    const matchNo = (currentFilter === "すべて" || card.no === currentFilter);
+    const matchLearned = (!onlyUnlearned || !learnedSet.has(card.q));
+    return matchNo && matchLearned;
+  });
+  currentIndex = 0;
+  isFlipped = false;
+  initTabs();
+  renderCard();
+}
+
+function renderCard() {
+  const cardEl = document.getElementById("card");
+  const badgeEl = document.getElementById("card-badge");
+  const textEl = document.getElementById("card-text");
+  const counterEl = document.getElementById("counter");
+  const learnedEl = document.getElementById("learned-count");
+
+  learnedEl.textContent = "習得済み: " + learnedSet.size + " / " + allCards.length;
+
+  if (deck.length === 0) {
+    cardEl.className = "card";
+    badgeEl.textContent = "完了";
+    textEl.textContent = "この範囲の未習得カードはありません！";
+    counterEl.textContent = "0 / 0";
+    return;
+  }
+
+  const item = deck[currentIndex];
+  counterEl.textContent = (currentIndex + 1) + " / " + deck.length;
+
+  if (isFlipped) {
+    cardEl.className = "card answer-mode";
+    badgeEl.textContent = item.no + " 【答え】";
+    textEl.textContent = item.a;
+  } else {
+    cardEl.className = "card";
+    badgeEl.textContent = item.no + " 【問題】";
+    textEl.textContent = item.q;
+  }
+}
+
+function flipCard() {
+  if (deck.length === 0) return;
+  isFlipped = !isFlipped;
+  renderCard();
+}
+
+function nextCard() {
+  if (deck.length === 0) return;
+  currentIndex = (currentIndex + 1) % deck.length;
+  isFlipped = false;
+  renderCard();
+}
+
+function prevCard() {
+  if (deck.length === 0) return;
+  currentIndex = (currentIndex - 1 + deck.length) % deck.length;
+  isFlipped = false;
+  renderCard();
+}
+
+function markCard(learned) {
+  if (deck.length === 0) return;
+  const q = deck[currentIndex].q;
+  if (learned) {
+    learnedSet.add(q);
+  } else {
+    learnedSet.delete(q);
+  }
+  if (onlyUnlearned && learned) {
+    applyFilter();
+  } else {
+    nextCard();
+  }
+}
+
+function shuffleCards() {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  currentIndex = 0;
+  isFlipped = false;
+  renderCard();
+}
+
+function toggleUnlearned() {
+  onlyUnlearned = !onlyUnlearned;
+  document.getElementById("filter-btn").classList.toggle("active", onlyUnlearned);
+  applyFilter();
+}
+
+initTabs();
+renderCard();
+</script>
+</body>
+</html>
